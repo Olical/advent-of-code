@@ -1,6 +1,6 @@
 # Advent of Code
 
-This repository houses my attempts for the [Advent of Code][aoc]. I hope you can learn from my attempts, but don't cheat. All programs can be executed with `make`.
+This repository houses my attempts for the [Advent of Code][adventofcode]. I hope you can learn from these, but please don't use them to cheat. All programs can be executed with `lein run` (I'm using [Clojure][] and by extension [Leiningen][] so you'll need those)
 
 ## Author
 
@@ -19,4 +19,6 @@ Do what you want. Learn as much as you can. Unlicense more software.
 [unlicense]: http://unlicense.org/
 [author-site]: http://oli.me.uk/
 [author-twitter]: https://twitter.com/OliverCaldwell
-  [aoc]: http://adventofcode.com/
+[adventofcode]: http://adventofcode.com/
+[clojure]: http://clojure.org/
+[leiningen]: http://leiningen.org/
