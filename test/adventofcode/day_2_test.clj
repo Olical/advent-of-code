@@ -9,5 +9,12 @@
 ;; The elves also need a little extra paper for each present: the area of the smallest side.
 
 (deftest example-results
-  (is (= 52 (required-wrapping-paper 2 3 4)))
-  (is (= 42 (required-wrapping-paper 1 1 10))))
+  (is (= 58 (required-wrapping-paper 2 3 4)))
+  (is (= 43 (required-wrapping-paper 1 1 10)))
+  (is (= 0 (required-wrapping-paper 0 0 0))))
+
+(deftest parsing-measurements
+  (is (= [1 2 3] (parse-measurement "1x2x3"))))
+
+(deftest total-required
+  (is (= 1598415 (total-wrapping-paper input))))
