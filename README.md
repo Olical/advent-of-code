@@ -1,6 +1,6 @@
 # Advent of Code
 
-This repository houses my attempts for the [Advent of Code][adventofcode]. I hope you can learn from these, but please don't use them to cheat. All programs can be executed with `lein run` (I'm using [Clojure][] and by extension [Leiningen][] so you'll need those)
+This repository houses my attempts for the [Advent of Code][adventofcode]. I hope you can learn from these, but please don't use them to cheat. You can run the tests with `lein test` (I'm using [Clojure][] and by extension [Leiningen][] so you'll need those)
 
 ## Author
 
