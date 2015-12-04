@@ -1,4 +1,4 @@
-(ns adventofcode.core
+(ns adventofcode.day-1
   (:require [clojure.java.io :as io]))
 
 (def instruction-values

@@ -1,6 +1,6 @@
-(ns adventofcode.core-test
+(ns adventofcode.day-1-test
   (:require [clojure.test :refer :all]
-            [adventofcode.core :refer :all]
+            [adventofcode.day-1 :refer :all]
             [clojure.java.io :as io]))
 
 (def input (slurp (io/resource "inputs/day-1.txt")))
