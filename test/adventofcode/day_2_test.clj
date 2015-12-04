@@ -8,7 +8,7 @@
 ;; Find the surface area of the box, which is 2*l*w + 2*w*h + 2*h*l.
 ;; The elves also need a little extra paper for each present: the area of the smallest side.
 
-(deftest example-results
+(deftest example-paper
   (is (= 58 (required-wrapping-paper 2 3 4)))
   (is (= 43 (required-wrapping-paper 1 1 10)))
   (is (= 0 (required-wrapping-paper 0 0 0))))
@@ -16,5 +16,12 @@
 (deftest parsing-measurements
   (is (= [1 2 3] (parse-measurement "1x2x3"))))
 
-(deftest total-required
+(deftest total-required-paper
   (is (= 1598415 (total-wrapping-paper input))))
+
+(deftest example-ribbon
+  (is (= 34 (required-ribbon 2 3 4)))
+  (is (= 14 (required-ribbon 1 1 10))))
+
+(deftest total-required-ribbon
+  (is (= 3812909 (total-ribbon input))))

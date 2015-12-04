@@ -9,11 +9,26 @@
         smallest (apply min sides)]
     (apply + (conj multiplied smallest))))
 
+(defn required-ribbon [w h l]
+  (let [perimeters (map (partial * 2) [(+ l w)
+                                       (+ w h)
+                                       (+ h l)])
+        smallest (apply min perimeters)]
+    (+ smallest (* w h l))))
+
 (defn parse-measurement [measurement]
   (map #(Integer. %) (split measurement #"x")))
 
-(defn total-wrapping-paper [input]
-  (let [lines (split input #"\n")
-        measurements (map parse-measurement lines)
-        requirements (map (partial apply required-wrapping-paper) measurements)]
+(defn parse-input [input]
+  (map parse-measurement (split input #"\n")))
+
+(defn map-total-requirements [input f]
+  (let [measurements (parse-input input)
+        requirements (map (partial apply f) measurements)]
     (apply + requirements)))
+
+(defn total-wrapping-paper [input]
+  (map-total-requirements input required-wrapping-paper))
+
+(defn total-ribbon [input]
+  (map-total-requirements input required-ribbon))
