@@ -12,3 +12,6 @@
 
 (deftest part-1
   (is (= 2592 (count-houses input))))
+
+(deftest part-2
+  (is (= 2360 (count-houses-mirror input))))

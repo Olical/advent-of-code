@@ -19,3 +19,9 @@
 
 (defn count-houses [input]
   (count (distinct (visited-houses (map directions input)))))
+
+(defn count-houses-mirror [input]
+  (let [instructions (map directions input)
+        santa (visited-houses (take-nth 2 instructions))
+        robo (visited-houses (take-nth 2 (rest instructions)))]
+    (count (distinct (concat santa robo)))))
