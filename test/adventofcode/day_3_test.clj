@@ -9,3 +9,6 @@
   (is (= 2 (count-houses ">")))
   (is (= 4 (count-houses "^>v<")))
   (is (= 2 (count-houses "^v^v^v^v^v"))))
+
+(deftest part-1
+  (is (= 2592 (count-houses input))))
