@@ -2,25 +2,28 @@
 
 (def vowles #{\a \e \i \o \u})
 
+(def bool-num {true 1
+               false 0})
+
 (def bad-substrs #{"ab"
                    "cd"
                    "pq"
                    "xy"})
 
-(def bool-num {false 0
-               true 1})
-
 (defn count-vowles [coll]
   (count (filter #(contains? vowles %) coll)))
 
 (defn has-sequential? [coll]
-  (re-find #"(.)\1+" coll))
+  (boolean (re-find #"(.)\1+" coll)))
+
+(defn has-bad-substr? [input]
+  (boolean (some true? (map #(.contains input %) bad-substrs))))
 
 (defn is-nice? [input]
   (and
-    (>= 3 (count-vowles input))
-    (not (= nil (has-sequential? input)))
-    (every? false? (map #(.contains input %) bad-substrs))))
+    (>= (count-vowles input) 3)
+    (has-sequential? input)
+    (not (has-bad-substr? input))))
 
 (defn count-nice [input]
   (reduce + (map bool-num (map is-nice? input))))

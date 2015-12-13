@@ -24,5 +24,9 @@
   (is (= 0 (count-vowles "")))
   (is (= 1 (count-vowles "dvszwmarrgswjxmb"))))
 
+(deftest has-bad-substr-test
+  (is (not (has-bad-substr? "hello")))
+  (is (has-bad-substr? "well ab then")))
+
 (deftest part-1
-  (is (= nil (count-nice input))))
+  (is (= 238 (count-nice input))))
