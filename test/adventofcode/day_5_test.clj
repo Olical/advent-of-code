@@ -13,5 +13,16 @@
   (is (not (is-nice? "haegwjzuvuyypxyu")))
   (is (not (is-nice? "dvszwmarrgswjxmb"))))
 
+(deftest has-sequential-test
+  (is (has-sequential? "hello world"))
+  (is (not (has-sequential? "oh hey"))))
+
+(deftest count-vowles-test
+  (is (= 3 (count-vowles "aaa")))
+  (is (= 5 (count-vowles "xxx a eio u xxx")))
+  (is (= 0 (count-vowles "pppffft")))
+  (is (= 0 (count-vowles "")))
+  (is (= 1 (count-vowles "dvszwmarrgswjxmb"))))
+
 (deftest part-1
   (is (= nil (count-nice input))))
