@@ -1,4 +1,5 @@
-(ns adventofcode.day-5)
+(ns adventofcode.day-5
+  (:require [clojure.string :as string]))
 
 (def vowles #{\a \e \i \o \u})
 
@@ -10,20 +11,34 @@
                    "pq"
                    "xy"})
 
+(def sequential-exp #"(.)\1+")
+
 (defn count-vowles [coll]
   (count (filter #(contains? vowles %) coll)))
 
 (defn has-sequential? [coll]
-  (boolean (re-find #"(.)\1+" coll)))
+  (boolean (re-find sequential-exp coll)))
 
 (defn has-bad-substr? [input]
   (boolean (some true? (map #(.contains input %) bad-substrs))))
 
-(defn is-nice? [input]
+(defn has-pair? [input]
+  false)
+
+(defn has-repeat-with-gap? [input]
+  (let [freqs (vals (frequencies (dedupe input)))]
+    (boolean (some #(> % 1) freqs))))
+
+(defn is-nice-1? [input]
   (and
     (>= (count-vowles input) 3)
     (has-sequential? input)
     (not (has-bad-substr? input))))
 
-(defn count-nice [input]
-  (reduce + (map bool-num (map is-nice? input))))
+(defn is-nice-2? [input]
+  (and
+    (has-pair? input)
+    (has-repeat-with-gap? input)))
+
+(defn countp [f input]
+  (reduce + (map bool-num (map f input))))
