@@ -7,7 +7,7 @@
 (def input (string/split (slurp (io/resource "inputs/day-6.txt")) #"\n"))
 
 (deftest day-1
-  (is (= nil (count-enabled-lights input))))
+  (is (= 543903 (count-enabled-lights input))))
 
 (deftest grid-tools
   (is (= 0 (xy->i 0 0)))

@@ -41,10 +41,20 @@
      :state (str-to-state (first parts))}))
 
 (defn apply-rule [lights rule-str]
-  (let [rule (parse-rule rule-str)]
-    lights))
+  (let [rule (parse-rule rule-str)
+        xr (range (get-in rule [:from :x])
+                  (inc (get-in rule [:to :x])))
+        yr (range (get-in rule [:from :y])
+                  (inc (get-in rule [:to :y])))
+        pairs (for [x xr y yr] [x y])]
+    (reduce
+      (fn [lights [x y]]
+        (set-light lights x y (rule :state))) lights pairs)))
 
 (defn count-enabled-lights [input]
   (let [lights (reduce apply-rule {} input)
         light-nums (map state-to-bool lights)]
-    (reduce-kv (fn [acc k v] (+ acc v)) 0 lights)))
+    (reduce-kv
+      (fn [acc k v] (+ acc (state-to-bool v)))
+      0
+      lights)))
