@@ -11,23 +11,20 @@
                    "pq"
                    "xy"})
 
-(def sequential-exp #"(.)\1+")
-
 (defn count-vowles [coll]
   (count (filter #(contains? vowles %) coll)))
 
 (defn has-sequential? [coll]
-  (boolean (re-find sequential-exp coll)))
+  (boolean (re-find #"(.)\1" coll)))
 
-(defn has-bad-substr? [input]
-  (boolean (some true? (map #(.contains input %) bad-substrs))))
+(defn has-bad-substr? [coll]
+  (boolean (some true? (map #(.contains coll %) bad-substrs))))
 
-(defn has-pair? [input]
+(defn has-pair? [coll]
   false)
 
-(defn has-repeat-with-gap? [input]
-  (let [freqs (vals (frequencies (dedupe input)))]
-    (boolean (some #(> % 1) freqs))))
+(defn has-repeat-with-gap? [coll]
+  (boolean (re-find #"(.).\1" coll)))
 
 (defn is-nice-1? [input]
   (and
