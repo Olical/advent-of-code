@@ -50,4 +50,4 @@
   (is (= 238 (countp is-nice-1? input))))
 
 (deftest part-2
-  (is (= nil (countp is-nice-2? input))))
+  (is (= 69 (countp is-nice-2? input))))

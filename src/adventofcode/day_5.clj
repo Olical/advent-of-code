@@ -21,7 +21,7 @@
   (boolean (some true? (map #(.contains coll %) bad-substrs))))
 
 (defn has-pair? [coll]
-  false)
+  (boolean (re-find #"(.)(.).*\1\2" coll)))
 
 (defn has-repeat-with-gap? [coll]
   (boolean (re-find #"(.).\1" coll)))
