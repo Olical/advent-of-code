@@ -23,6 +23,9 @@
         (= :off (get-light inverted 2 4)))))
 
 (deftest rule-parsing
+  (is (= {:x 0 :y 0} (parse-coord "0,0")))
+  (is (= {:x 2 :y 5} (parse-coord "2,5")))
+  (is (= {:x 10 :y 200} (parse-coord "10,200")))
   (is (= {:from {:x 0 :y 0}
           :to {:x 999 :y 999}
           :state :on}
