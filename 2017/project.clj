@@ -1,6 +1,6 @@
 (defproject advent "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.8.0"]])
+  :description "Oliver Caldwell's attempts at the Advent of Code"
+  :url "http://adventofcode.com/"
+  :license {:name "Unlicense"
+            :url "http://unlicense.org/"}
+  :dependencies [[org.clojure/clojure "1.9.0-RC2"]])

@@ -1,1 +1,0 @@
-([:dependencies ([cider/cider-nrepl "0.10.0"] [org.clojure/clojure "1.7.0"] [digest/digest "1.4.4"] [org.clojure/tools.nrepl "0.2.10" :exclusions ([org.clojure/clojure])] [clojure-complete/clojure-complete "0.2.3" :exclusions ([org.clojure/clojure])])])
