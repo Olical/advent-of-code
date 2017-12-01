@@ -3,20 +3,22 @@
             [clojure.string :as str]))
 
 (defn parse [input]
-  (let [result (->> (str/split input #"")
-                    (remove #{"\n"})
-                    (map edn/read-string))]
-    (conj result (last result))))
+  (into []
+        (comp (remove #{"\n"})
+              (map edn/read-string))
+        (str/split input #"")))
 
-(defn sum-pairs [input]
-  (loop [digits (parse input)
-         prev nil
-         acc 0]
-    (let [digit (first digits)]
-      (if digit
-        (recur (rest digits)
-               digit
-               (if (= digit prev)
-                 (+ acc prev)
-                 acc))
-        acc))))
+(defn sum-pairs [src relation]
+  (let [input (parse src)
+        input-count (count input)
+        input-half (/ input-count 2)]
+    (reduce-kv (fn [acc n a]
+                 (let [rel-n (case relation
+                               :next (inc n)
+                               :halfway (+ n input-half))
+                       b (nth input (mod rel-n input-count))]
+                   (if (= a b)
+                     (+ acc a)
+                     acc)))
+               0
+               input)))
