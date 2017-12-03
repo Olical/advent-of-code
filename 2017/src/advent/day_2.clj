@@ -9,6 +9,14 @@
 (defn row-min-max [row]
   (Math/abs (- (apply min row) (apply max row))))
 
+(defn row-divisible [row]
+  (first
+   (filter integer?
+           (for [x row
+                 y row
+                 :when (not= x y)]
+             (/ x y)))))
+
 (defn checksum [src row-fn]
   (->> (parse src)
        (map row-fn)

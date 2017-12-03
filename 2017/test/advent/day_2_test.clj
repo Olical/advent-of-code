@@ -17,7 +17,6 @@
   (t/is (= 18 (sut/checksum example-a sut/row-min-max)))
   (t/is (= 42299 (sut/checksum input sut/row-min-max))))
 
-#_(t/deftest part-b
-  (let [row-fn (fn [row]
-                 )]
-    (t/is (= 9 (sut/checksum example-b row-fn)))))
+(t/deftest part-b
+  (t/is (= 9 (sut/checksum example-b sut/row-divisible)))
+  (t/is (= 277 (sut/checksum input sut/row-divisible))))
