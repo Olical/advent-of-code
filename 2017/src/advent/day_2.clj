@@ -6,8 +6,10 @@
   (->> (str/split src #"\n")
        (map #(map edn/read-string (str/split % #"\s+")))))
 
-(defn checksum [src]
+(defn row-min-max [row]
+  (Math/abs (- (apply min row) (apply max row))))
+
+(defn checksum [src row-fn]
   (->> (parse src)
-       (map (fn [row]
-              (Math/abs (- (apply min row) (apply max row)))))
+       (map row-fn)
        (apply +)))
