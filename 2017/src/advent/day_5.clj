@@ -12,11 +12,11 @@
     (inc n)))
 
 (defn steps [src update-fn]
-  (loop [instructions (parse src)
+  (loop [instructions (transient (parse src))
          pointer 0
          step 0]
     (if-let [instruction (get instructions pointer)]
-      (recur (update instructions pointer update-fn)
+      (recur (assoc! instructions pointer (update-fn instruction))
              (+ pointer instruction)
              (inc step))
       step)))
