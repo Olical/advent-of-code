@@ -4,22 +4,23 @@
 
 (defn parse [src]
   (->> (str/split src #"\n")
-       (into []
+       (into {}
              (comp (map #(str/split % #",?\s"))
                    (map (fn [[name weight _ & children]]
-                          (merge {:name name
-                                  :weight (edn/read-string (re-find #"\d+" weight))}
-                                 (when children
-                                   {:children (set children)}))))))))
+                          [name (merge {:name name
+                                        :weight (edn/read-string (re-find #"\d+" weight))}
+                                       (when children
+                                         {:children (set children)}))]))))))
 
-(defn parent [program tree]
+(defn parent [program nodes]
   (first (filter (fn [{:keys [children]}]
                    (contains? children program))
-                 tree)))
+                 nodes)))
 
 (defn root [tree]
-  (first (remove #(parent % tree) (map :name tree))))
+  (let [nodes (vals tree)]
+    (first (remove #(parent (:name %) nodes) nodes))))
 
-(defn fix-weight [tree]
-  (let [leaves (group-by #(parent (:name %) tree) (remove :children tree))]
-    leaves))
+(defn bad-weight [tree]
+  (loop [nodes [(root tree)]
+         weights {}]))
