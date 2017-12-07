@@ -23,20 +23,13 @@
 
 (defn bad-weight [tree]
   (loop [nodes [(root tree)]
+         seen #{}
          weights {}]
-    (if-let [{:keys [children weight name] :as node} (first nodes)]
-      (let [child-weights (map weights children)]
-        (cond
-          (and (seq children) (not (contains? weights name)))
-          (recur (concat (map tree children) nodes) (assoc weights name weight))
-
-          (and (contains? weights name) (apply not= child-weights))
-          (-> (remove (fn [[value amount]]
-                        (= amount 1))
-                      (frequencies child-weights))
-              keys
-              first)
-
-          :else (recur (rest nodes)
-                       (assoc weights name (apply + weight child-weights)))))
-      [:all-good weights])))
+    (let [[{:keys [weight children] :as node} & _] nodes
+          child-nodes (map tree children)
+          child-weights (map weights child-nodes)]
+      (if node
+        (if (contains? seen node)
+          (recur (rest nodes) seen (assoc weights node (apply + weight child-weights)))
+          (recur (concat child-nodes nodes) (conj seen node) weights))
+        weights))))

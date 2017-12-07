@@ -24,5 +24,5 @@ cntj (57)")
   (t/is (= "bsfpjtc" (:name (sut/root (sut/parse input))))))
 
 (t/deftest part-b
-  (t/is (= 243 (sut/bad-weight (sut/parse example))))
-  (t/is (= nil (sut/bad-weight (sut/parse input)))))
+  (t/is (= 60 (sut/bad-weight (sut/parse example))))
+  #_(t/is (= nil (sut/bad-weight (sut/parse input)))))
