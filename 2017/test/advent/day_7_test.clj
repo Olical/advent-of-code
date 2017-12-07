@@ -20,5 +20,9 @@ gyxo (61)
 cntj (57)")
 
 (t/deftest part-a
-  (t/is (= "tknk" (sut/bottom-program (sut/parse example))))
-  (t/is (= "bsfpjtc" (sut/bottom-program (sut/parse input)))))
+  (t/is (= "tknk" (sut/root (sut/parse example))))
+  (t/is (= "bsfpjtc" (sut/root (sut/parse input)))))
+
+(t/deftest part-b
+  (t/is (= 60 (sut/fix-weight (sut/parse example))))
+  #_(t/is (= nil (sut/fix-weight (sut/parse input)))))
