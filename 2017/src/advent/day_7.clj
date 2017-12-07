@@ -27,9 +27,11 @@
          weights {}]
     (let [[{:keys [weight children] :as node} & _] nodes
           child-nodes (map tree children)
-          child-weights (map weights child-nodes)]
+          child-weights (map #(or (% weights) (:weight %)) child-nodes)]
       (if node
         (if (contains? seen node)
-          (recur (rest nodes) seen (assoc weights node (apply + weight child-weights)))
-          (recur (concat child-nodes nodes) (conj seen node) weights))
+          (if (and (not (empty? child-weights)) (apply not= child-weights))
+            (apply + weight child-weights)
+            (recur (rest nodes) seen (assoc weights node (apply + weight child-weights))))
+          (recur (concat child-nodes nodes) (conj seen node) (assoc weights node weight)))
         weights))))
