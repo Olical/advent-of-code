@@ -13,3 +13,7 @@ c inc -20 if c == 10")
 (t/deftest part-a
   (t/is (= 1 (sut/max-reg (sut/execute (sut/parse example)))))
   (t/is (= 6611 (sut/max-reg (sut/execute (sut/parse input))))))
+
+(t/deftest part-b
+  (t/is (= 10 (sut/max-reg-ever (sut/execute (sut/parse example)))))
+  (t/is (= 6619 (sut/max-reg-ever (sut/execute (sut/parse input))))))
