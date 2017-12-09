@@ -15,21 +15,24 @@
 (defn drop-until [target steps]
   (drop-while #(not= target %) steps))
 
-(defn depths [src]
+(defn gc [src]
   (loop [mode :normal
          steps (parse src)
          depths []
-         depth 1]
+         depth 1
+         garbage 0]
     (if-let [[step & rest-steps] steps]
       (if (= step :skip-next)
-        (recur mode (rest rest-steps) depths depth)
+        (recur mode (rest rest-steps) depths depth garbage)
         (case mode
           :normal (case step
-                    :open-group (recur mode rest-steps (conj depths depth) (inc depth))
-                    :close-group (recur mode rest-steps depths (dec depth))
-                    :open-garbage (recur :garbage rest-steps depths depth)
-                    (recur mode rest-steps depths depth))
+                    :open-group (recur mode rest-steps (conj depths depth) (inc depth) garbage)
+                    :close-group (recur mode rest-steps depths (dec depth) garbage)
+                    :open-garbage (recur :garbage rest-steps depths depth garbage)
+                    (recur mode rest-steps depths depth garbage))
           :garbage (case step
-                     :close-garbage (recur :normal rest-steps depths depth)
-                     (recur mode rest-steps depths depth))))
-      depths)))
+                     :close-garbage (recur :normal rest-steps depths depth garbage)
+                     (recur mode rest-steps depths depth (inc garbage)))))
+      {:groups (count depths)
+       :score (apply + depths)
+       :garbage garbage})))
