@@ -2,9 +2,6 @@
   (:require [clojure.string :as str]
             [clojure.edn :as edn]))
 
-(defn parse [src]
-  (map edn/read-string (str/split src #",")))
-
 (defn ring-reverse [original from length]
   (let [list-size (count original)
         wrap #(mod % list-size)]
@@ -17,14 +14,37 @@
                (inc pos)
                (dec remaining))))))
 
-(defn twist-hash [src size]
-  (loop [lengths (parse src)
-         mem (vec (range size))
-         pos 0
-         skip 0]
-    (if-let [[length & rest-lengths] lengths]
-      (recur rest-lengths
-             (ring-reverse mem pos length)
-             (mod (+ pos length skip) size)
-             (inc skip))
-      (* (first mem) (second mem)))))
+(defn knot [lengths mem pos skip]
+  (let [size (count mem)]
+    (loop [lengths lengths
+           mem mem
+           pos pos
+           skip skip]
+      (if-let [[length & rest-lengths] lengths]
+        (recur rest-lengths
+               (ring-reverse mem pos length)
+               (mod (+ pos length skip) size)
+               (inc skip))
+        {:mem mem
+         :pos pos
+         :skip skip}))))
+
+(defn twist [src size]
+  (->> (knot (map edn/read-string (str/split src #",")) (vec (range size)) 0 0)
+       (:mem)
+       (take 2)
+       (apply *)))
+
+(defn knot-hash [src]
+  (let [lengths (concat (map int src) (list 17 31 73 47 23))
+        sparse-hash (loop [rounds 64
+                           {:keys [pos skip mem]} {:mem (vec (range 256))
+                                                   :pos 0
+                                                   :skip 0}]
+                      (if (zero? rounds)
+                        mem
+                        (recur (dec rounds) (knot lengths mem pos skip))))]
+    (->> (reduce (fn [_ n] apply bit-xor n)
+                 (partition 16 sparse-hash))
+         (map #(format "%02x" %))
+         (str/join))))
