@@ -24,7 +24,7 @@
   (t/is (= 9 (:score (sut/gc "{{<!!>},{<!!>},{<!!>},{<!!>}}"))))
   (t/is (= 3 (:score (sut/gc "{{<a!>},{<a!>},{<a!>},{<ab>}}"))))
 
-  (t/is (= 16869 (apply + (sut/depths input)))))
+  (t/is (= 16869 (:score (sut/gc input)))))
 
 (t/deftest part-b
   (t/is (= 0 (:garbage (sut/gc "<>"))))
