@@ -36,7 +36,7 @@
        (apply *)))
 
 (defn knot-hash [src]
-  (let [lengths (concat (map int src) (list 17 31 73 47 23))
+  (let [lengths (concat (map int (str/trim src)) (list 17 31 73 47 23))
         sparse-hash (loop [rounds 64
                            {:keys [pos skip mem]} {:mem (vec (range 256))
                                                    :pos 0
@@ -44,7 +44,6 @@
                       (if (zero? rounds)
                         mem
                         (recur (dec rounds) (knot lengths mem pos skip))))]
-    (->> (reduce (fn [_ n] apply bit-xor n)
-                 (partition 16 sparse-hash))
-         (map #(format "%02x" %))
+    (->> (map #(format "%02x" (apply bit-xor %))
+              (partition 16 sparse-hash))
          (str/join))))
