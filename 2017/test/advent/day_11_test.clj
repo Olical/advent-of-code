@@ -10,4 +10,4 @@
   (t/is (= 0 (sut/distance "ne,ne,sw,sw")))
   (t/is (= 2 (sut/distance "ne,ne,s,s")))
   (t/is (= 3 (sut/distance "se,sw,se,sw,sw")))
-  (t/is (= nil (sut/distance input))))
+  (t/is (= 664 (sut/distance input))))

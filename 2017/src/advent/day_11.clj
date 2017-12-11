@@ -8,26 +8,26 @@
            "sw" :southwest
            "nw" :northwest})
 
-(def dir->pos {:north {:y -1}
-               :south {:y 1}
-               :northeast {:x 1, :y -1}
-               :southeast {:x 1, :y 1}
-               :southwest {:x -1, :y 1}
-               :northwest {:x -1, :y -1}})
+(def dir->pos {:north {:y 1, :z -1}
+               :south {:y -1, :z 1}
+               :northeast {:x 1, :z -1}
+               :southeast {:x 1, :y -1}
+               :southwest {:x -1, :z 1}
+               :northwest {:x -1, :y 1}})
 
 (defn parse [src]
   (->> (str/split (str/trim src) #",")
        (map dirs)))
 
-(defn hex-distance [{aq :x, ar :y} {bq :x, br :y}]
-  (/ (+ (Math/abs (- aq bq))
-        (Math/abs (+ aq (- ar bq br)))
-        (Math/abs (- ar br)))
+(defn hex-distance [a b]
+  (/ (+ (Math/abs (- (:x a) (:x b)))
+        (Math/abs (- (:y a) (:y b)))
+        (Math/abs (- (:z a) (:z b))))
      2))
 
 (defn distance [src]
   (let [pos (reduce (fn [pos dir]
                       (merge-with + pos (dir->pos dir)))
-                    {:x 0, :y 0}
+                    {:x 0, :y 0, :z 0}
                     (parse src))]
-    (hex-distance {:x 0, :y 0} pos)))
+    (hex-distance {:x 0, :y 0, :z 0} pos)))
