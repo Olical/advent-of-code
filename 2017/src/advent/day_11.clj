@@ -26,8 +26,15 @@
      2))
 
 (defn distance [src]
-  (let [pos (reduce (fn [pos dir]
-                      (merge-with + pos (dir->pos dir)))
-                    {:x 0, :y 0, :z 0}
+  (let [start {:x 0, :y 0, :z 0}
+        furthest (atom 0)
+        pos (reduce (fn [pos dir]
+                      (let [next-pos (merge-with + pos (dir->pos dir))
+                            current-distance (hex-distance start next-pos)]
+                        (when (> current-distance @furthest)
+                          (reset! furthest current-distance))
+                        next-pos))
+                    start
                     (parse src))]
-    (hex-distance {:x 0, :y 0, :z 0} pos)))
+    {:last (hex-distance start pos)
+     :furthest @furthest}))
