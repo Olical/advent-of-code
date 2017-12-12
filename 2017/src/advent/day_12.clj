@@ -21,4 +21,15 @@
           (recur (conj seen current) (concat (rest work) possible)))))))
 
 (defn group [pipes target]
-  (conj (filter #(can-reach? pipes % target) (keys pipes)) target))
+  (set (conj (filter #(can-reach? pipes % target) (keys pipes)) target)))
+
+(defn seen-in-group? [groups target]
+  (boolean (first (filter #(contains? % target) groups))))
+
+(defn groups [pipes]
+  (reduce (fn [acc target]
+            (if (seen-in-group? acc target)
+              acc
+              (conj acc (group pipes target))))
+          #{}
+          (keys pipes)))

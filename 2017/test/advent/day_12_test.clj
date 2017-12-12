@@ -16,3 +16,7 @@
 (t/deftest part-a
   (t/is (= 6 (count (sut/group example 0))))
   (t/is (= 130 (count (sut/group input 0)))))
+
+(t/deftest part-b
+  (t/is (= 2 (count (sut/groups example))))
+  (t/is (= 189 (count (sut/groups input)))))
