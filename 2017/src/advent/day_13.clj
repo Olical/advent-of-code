@@ -19,7 +19,7 @@
                         (map (fn [[depth width]]
                                [depth (cycle (range width))])
                              firewall))]
-      (if (= depth last-depth)
+      (if (> depth last-depth)
         severity
         (recur (inc depth)
                (if (= 0 (first (get ranges depth)))
