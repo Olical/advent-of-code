@@ -10,7 +10,5 @@
 4: 4
 6: 4"))
 
-example
-
 (t/deftest part-a
   (t/is (= 24 (sut/severity example))))

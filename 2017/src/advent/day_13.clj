@@ -12,4 +12,20 @@
                       (edn/read-string range)]))))))
 
 (defn severity [firewall]
-  nil)
+  (let [last-depth (apply max (keys firewall))]
+    (loop [depth 0
+           severity 0
+           ranges (into {}
+                        (map (fn [[depth width]]
+                               [depth (cycle (range width))])
+                             firewall))]
+      (if (= depth last-depth)
+        severity
+        (recur (inc depth)
+               (if (= 0 (first (get ranges depth)))
+                 (+ severity (* depth (get firewall depth)))
+                 severity)
+               (into {}
+                     (map (fn [[depth width]]
+                            [depth (rest width)])
+                          ranges)))))))
