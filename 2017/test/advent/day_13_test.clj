@@ -11,4 +11,5 @@
 6: 4"))
 
 (t/deftest part-a
-  (t/is (= 24 (sut/severity example))))
+  (t/is (= 24 (sut/severity example)))
+  (t/is (= 1704 (sut/severity input))))

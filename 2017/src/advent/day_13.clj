@@ -7,9 +7,9 @@
        (into {}
              (comp
               (map #(str/split % #": "))
-              (map (fn [[depth range]]
+              (map (fn [[depth width]]
                      [(edn/read-string depth)
-                      (edn/read-string range)]))))))
+                      (edn/read-string width)]))))))
 
 (defn severity [firewall]
   (let [last-depth (apply max (keys firewall))]
@@ -17,7 +17,8 @@
            severity 0
            ranges (into {}
                         (map (fn [[depth width]]
-                               [depth (cycle (range width))])
+                               [depth (cycle (concat (range width)
+                                                     (rest (butlast (reverse (range width))))))])
                              firewall))]
       (if (> depth last-depth)
         severity
