@@ -11,5 +11,9 @@
 6: 4"))
 
 (t/deftest part-a
-  (t/is (= 24 (sut/severity example)))
-  (t/is (= 1704 (sut/severity input))))
+  (t/is (= 24 (:severity (sut/severity example {}))))
+  (t/is (= 1704 (:severity (sut/severity input {})))))
+
+(t/deftest part-b
+  (t/is (= 10 (sut/stealth-delay example)))
+  (t/is (= 3970918 (sut/stealth-delay input))))
