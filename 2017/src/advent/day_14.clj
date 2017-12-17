@@ -16,20 +16,20 @@
   (loop [n 127
          cells []]
     (if (>= n 0)
-      (recur (dec n) (concat cells (row input n)))
+      (recur (dec n) (concat (row input n) cells))
       cells)))
 
 (defn xy->n [{:keys [x y]}]
   (+ x (* y 128)))
 
 (defn neighbours [cells pos]
-  (filter #(and (map? %) (:used? %))
-          (map #(get cells (xy->n (merge-with + pos %)))
-               [{:x -1} {:y -1} {:x 1} {:y 1}])))
+  (->> #{{:x -1} {:y -1} {:x 1} {:y 1}}
+       (map #(get cells (xy->n (merge-with + pos %))))
+       (remove #(= false (:used? %)))))
 
 (defn regions [input]
   (let [cells (vec (memory input))]
-    (->> cells
+    (->> (filter :used? cells)
          (reduce (fn [cells cell]
                    (let [region (or (some :region (neighbours cells (:pos cell)))
                                     (gensym "region"))]
