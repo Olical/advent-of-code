@@ -13,26 +13,43 @@
           hash)))
 
 (defn memory [input]
-  (loop [n 127
-         cells []]
-    (if (>= n 0)
-      (recur (dec n) (concat (row input n) cells))
-      cells)))
+  (vec
+   (loop [n 127
+          cells (list)]
+     (if (>= n 0)
+       (recur (dec n) (concat (row input n) cells))
+       cells))))
 
 (defn xy->n [{:keys [x y]}]
   (+ x (* y 128)))
 
-(defn neighbours [cells pos]
-  (->> #{{:x -1} {:y -1} {:x 1} {:y 1}}
-       (map #(get cells (xy->n (merge-with + pos %))))
-       (remove #(= false (:used? %)))))
+(do
+ (defn spreadable [cells pos]
+   (->> [{:x -1} {:y -1} {:x 1} {:y 1}]
+        (into [] (comp (map #(get cells (xy->n (merge-with + pos %))))
+                       (remove nil?)
+                       (filter :used?)
+                       (remove :region)
+                       (map :pos)))))
 
-(defn regions [input]
-  (let [cells (vec (memory input))]
-    (->> (filter :used? cells)
-         (reduce (fn [cells cell]
-                   (let [region (or (some :region (neighbours cells (:pos cell)))
-                                    (gensym "region"))]
-                     (update cells (xy->n (:pos cell)) assoc :region region)))
-                 cells)
-         (group-by :region))))
+ (defn spread-region [cells region start-pos]
+   (loop [cells cells
+          [pos & rest-position] [start-pos]]
+     (if pos
+       (recur (update cells (xy->n pos) assoc :region region)
+              (concat rest-position (spreadable cells pos)))
+       cells)))
+
+ (defn regions [cells]
+   (loop [cells cells
+          region 0
+          [pos & rest-positions] (into [] (comp (filter :used?) (map :pos)) cells)]
+     (if pos
+       (let [cell (get cells (xy->n pos))]
+         (if (:region cell)
+           (recur cells region rest-positions)
+           (recur (spread-region cells region pos) (inc region) rest-positions)))
+       (group-by :region (filter :used? cells)))))
+
+ #_(def example-cells (memory "flqrgnkx"))
+ #_(count (keys (regions example-cells))))

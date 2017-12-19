@@ -13,4 +13,4 @@
   (t/is (= 8106 (count (filter :used? (sut/memory input))))))
 
 (t/deftest part-b
-  (t/is (= 1242 (count (keys (sut/regions example))))))
+  (t/is (= 1242 (count (keys (sut/regions (sut/memory example)))))))
