@@ -9,3 +9,7 @@
 (t/deftest part-a
   (t/is (= "baedc" (sut/dance "abcde" "s1,x3/4,pe/b")))
   (t/is (= "gkmndaholjbfcepi" (sut/dance "abcdefghijklmnop" input))))
+
+(t/deftest part-b
+  (t/is (= nil (sut/dance-a-shit-load "abcdefghijklmnop" input))))
+
