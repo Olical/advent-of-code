@@ -6,4 +6,4 @@
 (def input (sut/parse (slurp (io/resource "day-18.txt"))))
 
 (t/deftest part-a
-  (t/is (= nil (sut/freq input))))
+  (t/is (= 1187 (sut/freq input))))
