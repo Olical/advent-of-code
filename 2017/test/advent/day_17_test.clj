@@ -7,3 +7,6 @@
 (t/deftest part-a
   (t/is (= 638 (sut/spinlock 3)))
   (t/is (= 1971 (sut/spinlock input))))
+
+(t/deftest part-b
+  (t/is (= nil (sut/ANGRY-SPINLOCK input))))

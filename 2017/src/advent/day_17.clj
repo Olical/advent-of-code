@@ -12,3 +12,12 @@
       (get buffer index)
       (let [index (mod (+ index step) (count buffer))]
         (recur (inc index) (inc value) (insert-at buffer index value))))))
+
+(defn ANGRY-SPINLOCK [step]
+  (loop [index 0
+         value 1
+         buffer [0]]
+    (if (> value 50000000)
+      (get buffer (inc (.indexOf buffer 0)))
+      (let [index (mod (+ index step) (count buffer))]
+        (recur (inc index) (inc value) (insert-at buffer index value))))))
