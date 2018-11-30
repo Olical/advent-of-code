@@ -1,5 +1,5 @@
 {:deps
- {org.clojure/clojure {:mvn/version "1.10.0-beta7"}}
+ {org.clojure/clojure {:mvn/version "1.10.0-RC2"}}
 
  :aliases
  {:nrepl
