@@ -1,19 +1,13 @@
 (ns aoc.day-01
   (:require [clojure.test :as t]
-            [clojure.java.io :as io]
-            [clojure.edn :as edn]))
-
-(defmacro with-input [bind & body]
-  `(with-open [rdr# (io/reader "inputs/day-01.txt")]
-     (let [~bind (map edn/read-string (line-seq rdr#))]
-       ~@body)))
+            [aoc.core :as aoc]))
 
 (defn sum-lines []
-  (with-input freqs
+  (aoc/with-edn-lines freqs "day-01"
     (reduce + freqs)))
 
 (defn first-dupe []
-  (with-input freqs
+  (aoc/with-edn-lines freqs "day-01"
     (loop [freqs (cycle freqs)
            sums #{}
            sum 0]
@@ -22,9 +16,10 @@
           sum
           (recur (rest freqs) (conj sums sum) sum))))))
 
-(t/deftest tests
-  (t/testing "01 A"
-    (t/is (= (sum-lines) 510)))
+(t/deftest day-01-a
+  (t/testing "input"
+    (t/is (= (sum-lines) 510))))
 
-  (t/testing "01 B"
+(t/deftest day-01-b
+  (t/testing "input"
     (t/is (= (first-dupe) 69074))))
