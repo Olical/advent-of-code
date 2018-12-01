@@ -3,23 +3,24 @@
             [clojure.java.io :as io]
             [clojure.edn :as edn]))
 
-(defn with-freqs [f]
-  (with-open [rdr (io/reader "inputs/day-01.txt")]
-    (f (map edn/read-string (line-seq rdr)))))
+(defmacro with-freqs [bind & body]
+  `(with-open [rdr# (io/reader "inputs/day-01.txt")]
+     (let [~bind (map edn/read-string (line-seq rdr#))]
+       ~@body)))
 
 (defn sum-lines []
-  (with-freqs #(reduce + %)))
+  (with-freqs fqs
+    (reduce + fqs)))
 
 (defn first-dupe []
-  (with-freqs
-    (fn [freqs]
-      (loop [freqs (cycle freqs)
-             sums #{}
-             sum 0]
-        (let [sum (+ sum (first freqs))]
-          (if (contains? sums sum)
-            sum
-            (recur (rest freqs) (conj sums sum) sum)))))))
+  (with-freqs fqs
+    (loop [freqs (cycle fqs)
+           sums #{}
+           sum 0]
+      (let [sum (+ sum (first freqs))]
+        (if (contains? sums sum)
+          sum
+          (recur (rest freqs) (conj sums sum) sum))))))
 
 (t/deftest tests
   (t/testing "01 A"
