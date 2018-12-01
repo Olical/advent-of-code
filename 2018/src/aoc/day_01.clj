@@ -3,18 +3,18 @@
             [clojure.java.io :as io]
             [clojure.edn :as edn]))
 
-(defmacro with-freqs [bind & body]
+(defmacro with-input [bind & body]
   `(with-open [rdr# (io/reader "inputs/day-01.txt")]
      (let [~bind (map edn/read-string (line-seq rdr#))]
        ~@body)))
 
 (defn sum-lines []
-  (with-freqs fqs
-    (reduce + fqs)))
+  (with-input freqs
+    (reduce + freqs)))
 
 (defn first-dupe []
-  (with-freqs fqs
-    (loop [freqs (cycle fqs)
+  (with-input freqs
+    (loop [freqs (cycle freqs)
            sums #{}
            sum 0]
       (let [sum (+ sum (first freqs))]
