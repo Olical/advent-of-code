@@ -2,16 +2,16 @@
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]))
 
-(defmacro with-input [bind file & body]
-  `(with-open [~bind (io/reader (format "inputs/%s.txt" ~file))]
-     ~@body))
+(defn with-input [file f]
+  (with-open [input (io/reader (format "inputs/%s.txt" file))]
+    (f input)))
 
-(defmacro with-lines [bind file & body]
-  `(with-input input# ~file
-     (let [~bind (line-seq input#)]
-       ~@body)))
+(defn with-lines [file f]
+  (with-input file
+    (fn [input]
+      (f (line-seq input)))))
 
-(defmacro with-edn-lines [bind file & body]
-  `(with-lines lines# ~file
-     (let [~bind (map edn/read-string lines#)]
-       ~@body)))
+(defn with-edn-lines [file f]
+  (with-lines file
+    (fn [lines]
+      (f (map edn/read-string lines)))))
