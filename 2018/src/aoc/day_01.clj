@@ -1,13 +1,14 @@
 (ns aoc.day-01
   (:require [clojure.test :as t]
+            [clojure.edn :as edn]
             [aoc.core :as aoc]))
 
 (defn sum-lines []
-  (aoc/with-edn-lines "day-01"
+  (aoc/with-lines "day-01" edn/read-string
     #(reduce + %)))
 
 (defn first-dupe []
-  (aoc/with-edn-lines "day-01"
+  (aoc/with-lines "day-01" edn/read-string
     (fn [freqs]
       (loop [freqs (cycle freqs)
              sums #{}
