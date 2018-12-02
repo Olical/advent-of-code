@@ -7,5 +7,4 @@
 
 (defn with-lines [file map-fn f]
   (with-input file
-    (fn [input]
-      (f (map map-fn (line-seq input))))))
+    #(f (map map-fn (line-seq %)))))
