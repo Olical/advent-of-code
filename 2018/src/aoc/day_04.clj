@@ -41,17 +41,27 @@
               {:id id
                :sleep (mapcat :sleep group)}))))
 
-(defn sleepy-hash []
+(defn most-sleepy []
   (let [{:keys [id sleep]} (->> (guards)
                                 (sort-by (comp count :sleep))
                                 (last))
         minute (->> (frequencies sleep) (sort-by second) (last) (first))]
     (* id minute)))
 
+(defn consistently-sleepy []
+  (let [[id [minute _]] (->> (guards)
+                             (map (fn [{:keys [id sleep]}]
+                                    [id (->> (frequencies sleep)
+                                             (sort-by second)
+                                             (last))]))
+                             (sort-by (comp second second))
+                             (last))]
+    (* id minute)))
+
 (t/deftest day-04-a
   (t/testing "input"
-    (t/is (= (sleepy-hash) 26281))))
+    (t/is (= (most-sleepy) 26281))))
 
 (t/deftest day-04-b
   (t/testing "input"
-    (t/is (= 0 0))))
+    (t/is (= (consistently-sleepy) 73001))))
