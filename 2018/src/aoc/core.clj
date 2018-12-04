@@ -8,3 +8,16 @@
 (defn with-lines [file map-fn f]
   (with-input file
     #(f (map map-fn (line-seq %)))))
+
+;; Template
+; (ns aoc.day-XX
+;   (:require [clojure.test :as t]
+;             [aoc.core :as aoc]))
+
+; (t/deftest day-XX-a
+;   (t/testing "input"
+;     (t/is (= 0 0))))
+
+; (t/deftest day-XX-b
+;   (t/testing "input"
+;     (t/is (= 0 0))))
