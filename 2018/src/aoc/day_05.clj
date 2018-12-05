@@ -14,8 +14,8 @@
   (when (string? s)
     (str/lower-case s)))
 
-(defn react []
-  (loop [units (units)
+(defn react [units]
+  (loop [units units
          acc []]
     (if-let [unit (first units)]
       (let [prev (last acc)
@@ -25,10 +25,24 @@
           (recur units (conj acc unit))))
       acc)))
 
+(defn reacted-count []
+  (count (react (units))))
+
+(def alphabet (str/split "abcdefghijklmnopqrstuvwxyz" #""))
+
+(defn reacted-shortest-count []
+  (let [base (react (units))]
+    (->> alphabet
+         (map
+           (fn [target]
+             (count (react (vec (remove #(or (= target %) (= target (lower %))) base))))))
+         (sort)
+         (first))))
+
 (t/deftest day-05-a
   (t/testing "input"
-    (t/is (= (count (react)) 0))))
+    (t/is (= (reacted-count) 9822))))
 
 (t/deftest day-05-b
   (t/testing "input"
-    (t/is (= 0 0))))
+    (t/is (= (reacted-shortest-count) 5726))))
