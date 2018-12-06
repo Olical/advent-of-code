@@ -44,25 +44,24 @@
       (= x (-> bounds :to :x))
       (= y (-> bounds :to :y))))
 
-(comment
-  (time
-    (->> (loop [[cell & cells] cells
-                edges {}
-                acc {}]
-           (if cell
-             (let [closest (closest coords cell)]
-               (cond
-                 (= closest :ambiguous) (recur cells edges acc)
-                 (edges closest) (recur cells edges acc)
-                 (edge? cell) (recur cells (assoc edges closest true) (dissoc acc closest))
-                 :else (recur cells edges (update acc closest (fnil inc 0)))))
-             acc))
-         (vals)
-         (apply max))))
+(defn biggest-island []
+  (->> (loop [[cell & cells] cells
+              edges {}
+              acc {}]
+         (if cell
+           (let [closest (closest coords cell)]
+             (cond
+               (= closest :ambiguous) (recur cells edges acc)
+               (edges closest) (recur cells edges acc)
+               (edge? cell) (recur cells (assoc edges closest true) (dissoc acc closest))
+               :else (recur cells edges (update acc closest (fnil inc 0)))))
+           acc))
+       (vals)
+       (apply max)))
 
 (t/deftest day-06-a
   (t/testing "input"
-    (t/is (= 0 0))))
+    (t/is (= (biggest-island) 3890))))
 
 (t/deftest day-06-b
   (t/testing "input"
