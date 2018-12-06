@@ -12,10 +12,10 @@
   (aoc/with-lines "day-06" parse-coord vec))
 
 (def bounds
-  {:from {:x (->> coords (map :x) (apply min) (- 20))
-          :y (->> coords (map :y) (apply min) (- 20))}
-   :to {:x (->> coords (map :x) (apply max) (+ 20))
-        :y (->> coords (map :y) (apply max) (+ 20))}})
+  {:from {:x (->> coords (map :x) (apply min) (- 15))
+          :y (->> coords (map :y) (apply min) (- 15))}
+   :to {:x (->> coords (map :x) (apply max) (+ 15))
+        :y (->> coords (map :y) (apply max) (+ 15))}})
 
 (def cells
   (for [x (range (-> bounds :from :x) (-> bounds :to :x inc))
@@ -36,13 +36,27 @@
       :ambiguous
       coord)))
 
+(defn edge? [{:keys [x y]}]
+  (or (= x (-> bounds :from :x))
+      (= y (-> bounds :from :y))
+
+      (= x (-> bounds :to :x))
+      (= y (-> bounds :to :y))))
+
 (comment
   (time
-    (loop [[cell & cells] cells
-           acc {}]
-      (if cell
-        (recur cells (update acc (closest coords cell) (fnil inc 0)))
-        acc))))
+    (->> (loop [[cell & cells] cells
+                edges {}
+                acc {}]
+           (if cell
+             (let [closest (closest coords cell)]
+               (cond
+                 (edges closest) (recur cells edges acc)
+                 (edge? closest) (recur cells (assoc edges closest true) (dissoc acc closest))
+                 :else (recur cells edges (update acc closest (fnil inc 0)))))
+             acc))
+         (vals)
+         (apply max))))
 
 (t/deftest day-06-a
   (t/testing "input"
