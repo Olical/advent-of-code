@@ -9,15 +9,32 @@
       (->> (str/split (first lines) #"\s")
            (map #(Integer/parseInt %))))))
 
-(do
-  (defn parse [input]
-    (let [[cc mc & input] input]
-      ))
+(defn parse [input]
+  (let [[cc mc & input] input]
+    (loop [cc cc
+           children []
+           input input]
+      (if (= cc 0)
+        (let [[metadata input] (split-at mc input)]
+          {:children children
+           :metadata metadata
+           :input input})
+        (let [res (parse input)]
+          (recur (dec cc)
+                 (conj children res)
+                 (:input res)))))))
+
+(def tree
   (parse input))
+
+(defn metadata-sum [tree]
+  (reduce +
+          (concat (:metadata tree)
+                  (map metadata-sum (:children tree)))))
 
 (t/deftest day-08-a
   (t/testing "input"
-    (t/is (= 0 0))))
+    (t/is (= (metadata-sum tree) 47647))))
 
 (t/deftest day-08-b
   (t/testing "input"
