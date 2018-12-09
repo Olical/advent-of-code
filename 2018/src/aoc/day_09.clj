@@ -9,14 +9,6 @@
 (defn score? [n]
   (zero? (mod n 23)))
 
-; (t/deftest day-09-a
-;   (t/testing "input"
-;     (t/is (= 0 0))))
-
-; (t/deftest day-09-b
-;   (t/testing "input"
-;     (t/is (= 0 0))))
-
 (defn node [prev value next]
   {:prev (atom prev)
    :value value
@@ -53,7 +45,7 @@
     node
     (recur @(:prev node) (dec n))))
 
-(time
+(defn high-score [input]
   (loop [circle (init 0)
          marbles (vec (range 1 (inc (:last input))))
          [player & players] (cycle (range (:players input)))
@@ -72,3 +64,12 @@
                  marbles
                  players
                  scores))))))
+
+(t/deftest day-09-a
+  (t/testing "input"
+    (t/is (= (high-score input) 408679))))
+
+(t/deftest day-09-b
+  (t/testing "input"
+    (t/is (= (high-score (update input :last * 100)) 3443939356))))
+

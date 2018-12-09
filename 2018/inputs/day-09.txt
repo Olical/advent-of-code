@@ -1,2 +1,1 @@
-{:players 30, :last 5807}
 {:players 424, :last 71482}
