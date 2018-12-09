@@ -9,24 +9,52 @@
 (defn score? [n]
   (zero? (mod n 23)))
 
-(defn -m [coll pos]
-  (concat (take pos coll) (drop (inc pos) coll)))
+; (t/deftest day-09-a
+;   (t/testing "input"
+;     (t/is (= 0 0))))
 
-(defn +m [coll pos v]
-  (let [[before after] (split-at pos coll)]
-    (concat before [v] after)))
+; (t/deftest day-09-b
+;   (t/testing "input"
+;     (t/is (= 0 0))))
 
-(t/deftest day-09-a
-  (t/testing "input"
-    (t/is (= 0 0))))
+(defn node [prev value next]
+  {:prev (atom prev)
+   :value value
+   :next (atom next)})
 
-(t/deftest day-09-b
-  (t/testing "input"
-    (t/is (= 0 0))))
+(defn init [v]
+  (let [temp (node nil v nil)]
+    (reset! (:prev temp) temp)
+    (reset! (:next temp) temp)))
+
+(defn remove-node [node]
+  (let [next @(:next node)
+        prev @(:prev node)]
+    (reset! (:next prev) next)
+    (reset! (:prev next) prev)
+    next))
+
+(defn insert-node [prev value]
+  (let [next @(:next prev)
+        new-node (node prev value next)]
+    (reset! (:next prev) new-node)
+    (reset! (:prev next) new-node)))
+
+;; a b
+;; a X c
+
+(defn walk+ [node n]
+  (if (= n 0)
+    node
+    (recur @(:next node) (dec n))))
+
+(defn walk- [node n]
+  (if (= n 0)
+    node
+    (recur @(:prev node) (dec n))))
 
 (time
-  (loop [circle '(0)
-         current 0
+  (loop [circle (init 0)
          marbles (vec (range 1 (inc (:last input))))
          [player & players] (cycle (range (:players input)))
          scores {}]
@@ -34,18 +62,13 @@
       (->> scores (sort-by val) (last) (val))
       (let [[marble & marbles] marbles]
         (if (score? marble)
-          (let [to-remove (mod (- current 7) (count circle))]
-            (recur (-m circle to-remove)
-                   to-remove
+          (let [to-remove (walk- circle 7)]
+            (recur (remove-node to-remove)
                    marbles
                    players
                    (update scores player (fnil + 0)
-                           marble (nth circle to-remove))))
-          (let [current (mod (+ current 2) (count circle))]
-            (recur (+m circle current marble)
-                   current
-                   marbles
-                   players
-                   scores)))))))
-
-;; 37305?
+                           marble (:value to-remove))))
+          (recur (insert-node (walk+ circle 1) marble)
+                 marbles
+                 players
+                 scores))))))
