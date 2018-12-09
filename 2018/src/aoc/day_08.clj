@@ -32,10 +32,21 @@
           (concat (:metadata tree)
                   (map metadata-sum (:children tree)))))
 
+(defn root-node-value [{:keys [children metadata]}]
+  (if (empty? children)
+    (reduce + metadata)
+    (reduce
+      (fn [acc n]
+        (if-let [child (get children (dec n))]
+          (+ acc (root-node-value child))
+          acc))
+      0
+      metadata)))
+
 (t/deftest day-08-a
   (t/testing "input"
     (t/is (= (metadata-sum tree) 47647))))
 
 (t/deftest day-08-b
   (t/testing "input"
-    (t/is (= 0 0))))
+    (t/is (= (root-node-value tree) 23636))))
