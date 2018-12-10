@@ -1,6 +1,7 @@
 (ns aoc.day-10
   (:require [clojure.test :as t]
             [clojure.edn :as edn]
+            [clojure.string :as str]
             [aoc.core :as aoc]))
 
 (t/deftest day-10-a
@@ -51,9 +52,35 @@
                      (inc streak)
                      0)))))
 
-(loop [step 0]
-  (let [points (advance points step)]
-    (cond
-      (lines? points) {:step step
-                       :points points}
-      :else (recur (inc step)))))
+(defn find-lines []
+  (loop [step 0]
+    (let [points (advance points step)]
+      (cond
+        (lines? points) {:step step
+                         :points points}
+        :else (recur (inc step))))))
+
+(let [points (advance points 10942)
+
+      first-last (juxt first last)
+      [small-x large-x] (->> points (map (comp :x :pos)) (sort) (first-last))
+      [small-y large-y] (->> points (map (comp :y :pos)) (sort) (first-last))]
+  (->> points
+           (map :pos)
+           (map (fn [pos]
+                  (-> pos
+                      (update :x - small-x)
+                      (update :y - small-y))))
+           (sort-by (juxt :x :y))
+           (group-by :y)
+           (sort-by key)
+           (map val)
+           (map (fn [points]
+                  (reduce
+                    (fn [acc pos]
+                      (assoc acc (:x pos) "#"))
+                    (vec (repeat large-x " "))
+                    points)))
+           (map str/join)
+           (str/join "\n")
+           (println)))
