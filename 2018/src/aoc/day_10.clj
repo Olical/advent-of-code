@@ -4,14 +4,6 @@
             [clojure.string :as str]
             [aoc.core :as aoc]))
 
-(t/deftest day-10-a
-  (t/testing "input"
-    (t/is (= 0 0))))
-
-(t/deftest day-10-b
-  (t/testing "input"
-    (t/is (= 0 0))))
-
 (def point-re #"position=<(.+), (.+)> velocity=<(.+), (.+)>")
 
 (defn parse-point [s]
@@ -60,27 +52,49 @@
                          :points points}
         :else (recur (inc step))))))
 
-(let [points (advance points 10942)
+(defn display [points]
+  (let [points points
 
-      first-last (juxt first last)
-      [small-x large-x] (->> points (map (comp :x :pos)) (sort) (first-last))
-      [small-y large-y] (->> points (map (comp :y :pos)) (sort) (first-last))]
-  (->> points
-           (map :pos)
-           (map (fn [pos]
-                  (-> pos
-                      (update :x - small-x)
-                      (update :y - small-y))))
-           (sort-by (juxt :x :y))
-           (group-by :y)
-           (sort-by key)
-           (map val)
-           (map (fn [points]
-                  (reduce
-                    (fn [acc pos]
-                      (assoc acc (:x pos) "#"))
-                    (vec (repeat large-x " "))
-                    points)))
-           (map str/join)
-           (str/join "\n")
-           (println)))
+        first-last (juxt first last)
+        [small-x large-x] (->> points (map (comp :x :pos)) (sort) (first-last))
+        [small-y large-y] (->> points (map (comp :y :pos)) (sort) (first-last))]
+    (->> points
+         (map :pos)
+         (map (fn [pos]
+                (-> pos
+                    (update :x - small-x)
+                    (update :y - small-y))))
+         (sort-by (juxt :x :y))
+         (group-by :y)
+         (sort-by key)
+         (map val)
+         (map (fn [points]
+                (reduce
+                  (fn [acc pos]
+                    (assoc acc (:x pos) "#"))
+                  (vec (repeat (- large-x small-x) " "))
+                  points)))
+         (map str/join)
+         (str/join "\n")
+         (println))))
+
+(t/deftest day-10-a
+  (t/testing "input"
+    (t/is (= (with-out-str (display (:points (find-lines))))
+"#####   #####     ##    #    #  ######  #         ##     ####
+#    #  #    #   #  #   ##   #       #  #        #  #   #    #
+#    #  #    #  #    #  ##   #       #  #       #    #  #    
+#    #  #    #  #    #  # #  #      #   #       #    #  #    
+#####   #####   #    #  # #  #     #    #       #    #  #    
+#  #    #  #    ######  #  # #    #     #       ######  #    
+#   #   #   #   #    #  #  # #   #      #       #    #  #    
+#   #   #   #   #    #  #   ##  #       #       #    #  #    
+#    #  #    #  #    #  #   ##  #       #       #    #  #    #
+#    #  #    #  #    #  #    #  ######  ######  #    #   ####
+"))))
+
+(t/deftest day-10-b
+  (t/testing "input"
+    (t/is (= (:step (find-lines)) 10942))))
+
+
