@@ -54,5 +54,6 @@
 (loop [step 0]
   (let [points (advance points step)]
     (cond
-      (lines? points) points
+      (lines? points) {:step step
+                       :points points}
       :else (recur (inc step)))))
