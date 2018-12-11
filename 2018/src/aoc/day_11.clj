@@ -22,14 +22,29 @@
           y (range 1 301)]
       (power x y))))
 
+(def cache! (atom {}))
+
 (defn square-sum [x y size]
-  (reduce
-    +
-    (for [x (range x (+ x size))
-          y (range y (+ y size))]
-      (-> grid
-          (nth x)
-          (nth y)))))
+  (if-let [cached (get @cache! [x y size])]
+    cached
+    (let [xr (range x (+ x size))
+          yr (range y (+ y size))
+          result (reduce
+                   +
+                   (for [x xr
+                         y yr]
+                     (-> grid
+                         (nth x)
+                         (nth y))))]
+      (swap!
+        cache!
+        (fn [cache]
+          (into
+            cache
+            (for [x xr
+                  y yr]
+              [[x y size] result]))))
+      result)))
 
 (defn powerful-square []
   (->> (for [x (range 1 299)
@@ -41,23 +56,9 @@
        :pos
        (str/join ",")))
 
-(defn improve [x y size]
-  (let [size (dec size)]
-    (for [x (range )])))
-
-(loop [x 1
-       y 1
-       size 300
-       power 0
-       acc []]
-  (if (zero? size)
-    (last (sort-by :power acc))
-    (let [{:keys [x y size power] :as shrunk} (shrink x y size)]
-      (recur x y size power (conj acc shrunk))))
-
 (t/deftest day-11-a
   (t/testing "input"
-    (t/is (= (powerful-square) "21,13"))))
+    (t/is (= (time (powerful-square)) "21,13"))))
 
 (t/deftest day-11-b
   (t/testing "input"
