@@ -22,18 +22,20 @@
           y (range 1 301)]
       (power grid-serial x y))))
 
-(defn square [grid x y]
-  (for [x (range x (+ x 3))
-        y (range y (+ y 3))]
-    (-> grid
-        (nth x)
-        (nth y))))
+(defn square-sum [grid x y size]
+  (reduce
+    +
+    (for [x (range x (+ x size))
+          y (range y (+ y size))]
+      (-> grid
+          (nth x)
+          (nth y)))))
 
 (defn powerful-square []
   (->> (for [x (range 1 299)
              y (range 1 299)]
          {:pos [x y]
-          :sum (reduce + (square grid (dec x) (dec y)))})
+          :sum (square-sum grid (dec x) (dec y) 3)})
        (sort-by :sum)
        (last)
        :pos
