@@ -1,28 +1,48 @@
 (ns aoc.day-11
   (:require [clojure.test :as t]
-            [aoc.core :as aoc]))
+            [clojure.string :as str]))
 
-(t/deftest day-11-a
-  (t/testing "input"
-    (t/is (= 0 0))))
-
-(t/deftest day-11-b
-  (t/testing "input"
-    (t/is (= 0 0))))
-
-(def grid-serial 57 #_9110)
-
-; (for [x (range 1 301)
-;       y (range 1 301)])
-
-(defn power [x y]
+(defn power [grid-serial x y]
   (let [rack (+ x 10)]
     (-> (* rack y)
         (+ grid-serial)
         (* rack)
-        (/ 100)
-        (mod 10)
-        (- 5)
-        (int))))
 
-(power 122 79)
+        ;; PLEASE FORGIVE ME
+        (-> str reverse (nth 2 \0) (str) (Integer/parseInt))
+
+        (- 5))))
+
+(def grid-serial 9110)
+
+(def grid
+  (partition
+    300
+    (for [x (range 1 301)
+          y (range 1 301)]
+      (power grid-serial x y))))
+
+(defn square [grid x y]
+  (for [x (range x (+ x 3))
+        y (range y (+ y 3))]
+    (-> grid
+        (nth x)
+        (nth y))))
+
+(defn powerful-square []
+  (->> (for [x (range 1 299)
+             y (range 1 299)]
+         {:pos [x y]
+          :sum (reduce + (square grid (dec x) (dec y)))})
+       (sort-by :sum)
+       (last)
+       :pos
+       (str/join ",")))
+
+(t/deftest day-11-a
+  (t/testing "input"
+    (t/is (= (powerful-square) "21,13"))))
+
+(t/deftest day-11-b
+  (t/testing "input"
+    (t/is (= 0 0))))
