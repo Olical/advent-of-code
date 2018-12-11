@@ -2,7 +2,9 @@
   (:require [clojure.test :as t]
             [clojure.string :as str]))
 
-(defn power [grid-serial x y]
+(def grid-serial 9110)
+
+(defn power [x y]
   (let [rack (+ x 10)]
     (-> (* rack y)
         (+ grid-serial)
@@ -13,16 +15,14 @@
 
         (- 5))))
 
-(def grid-serial 9110)
-
 (def grid
   (partition
     300
     (for [x (range 1 301)
           y (range 1 301)]
-      (power grid-serial x y))))
+      (power x y))))
 
-(defn square-sum [grid x y size]
+(defn square-sum [x y size]
   (reduce
     +
     (for [x (range x (+ x size))
@@ -35,11 +35,25 @@
   (->> (for [x (range 1 299)
              y (range 1 299)]
          {:pos [x y]
-          :sum (square-sum grid (dec x) (dec y) 3)})
+          :sum (square-sum (dec x) (dec y) 3)})
        (sort-by :sum)
        (last)
        :pos
        (str/join ",")))
+
+(defn improve [x y size]
+  (let [size (dec size)]
+    (for [x (range )])))
+
+(loop [x 1
+       y 1
+       size 300
+       power 0
+       acc []]
+  (if (zero? size)
+    (last (sort-by :power acc))
+    (let [{:keys [x y size power] :as shrunk} (shrink x y size)]
+      (recur x y size power (conj acc shrunk))))
 
 (t/deftest day-11-a
   (t/testing "input"
