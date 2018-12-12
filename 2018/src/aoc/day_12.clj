@@ -31,27 +31,43 @@
         {:state (initial-state state)
          :rule-fns (rule-fns rules)}))))
 
+(defn step [state]
+  (into
+    {}
+    (keep
+      (fn [n]
+        (let [res (or (some
+                        (fn [f]
+                          (f state n))
+                        (:rule-fns input))
+                      :.)]
+          (when-not (and (= res :.) (not (contains? state n)))
+            [n res]))))
+    (range (- (apply min (keys state)) 2) (+ (apply max (keys state)) 2))))
+
+(defn sum-state [state]
+  (->> state
+       (filter #(= (val %) :#))
+       (map key)
+       (reduce +)))
+
 (defn gen-20 []
-  (->>
-    (reduce
-      (fn [state _]
-        (into
-          {}
-          (keep
-            (fn [n]
-              (let [res (or (some
-                              (fn [f]
-                                (f state n))
-                              (:rule-fns input))
-                            :.)]
-                (when-not (and (= res :.) (not (contains? state n)))
-                  [n res]))))
-          (range (- (apply min (keys state)) 2) (+ (apply max (keys state)) 2))))
-      (:state input)
-      (range 20))
-    (filter #(= (val %) :#))
-    (map key)
-    (reduce +)))
+  (->> (reduce
+         (fn [state _]
+           (step state))
+         (:state input)
+         (range 20))
+       (sum-state)))
+
+(defn gen-50000000000 []
+  (->> (reductions
+         (fn [state _]
+           (step state))
+         (:state input)
+         (range 200))
+       (map sum-state)
+       (last)
+       (+ (* 86 (- 50000000000 200)))))
 
 (t/deftest day-12-a
   (t/testing "input"
@@ -59,5 +75,4 @@
 
 (t/deftest day-12-b
   (t/testing "input"
-    (t/is (= 0 0))))
-
+    (t/is (= (gen-50000000000) 4300000002414))))
