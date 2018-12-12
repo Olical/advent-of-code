@@ -37,16 +37,16 @@
       (fn [state _]
         (into
           {}
-          (map
+          (keep
             (fn [n]
-              [n
-               (or
-                 (some
-                   (fn [f]
-                     (f state n))
-                   (:rule-fns input))
-                 :.)]))
-          (range -1000 1000)))
+              (let [res (or (some
+                              (fn [f]
+                                (f state n))
+                              (:rule-fns input))
+                            :.)]
+                (when-not (and (= res :.) (not (contains? state n)))
+                  [n res]))))
+          (range (- (apply min (keys state)) 2) (+ (apply max (keys state)) 2))))
       (:state input)
       (range 20))
     (filter #(= (val %) :#))
