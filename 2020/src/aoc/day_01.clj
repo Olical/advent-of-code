@@ -1,11 +1,11 @@
 (ns aoc.day-01
   (:require [clojure.test :as t]
+            [clojure.math.combinatorics :as combi]
             [aoc.core :as aoc]))
 
-;; TODO Generic way to express the amount of distinct values we're looking for.
-;; TODO Can this be done in one pass or does it require nested loops?
-
 (def sum-target 2020)
+
+;; Sorting the input makes this a lot faster!
 (def input (aoc/with-lines "day-01" #(Integer/parseInt %) sort))
 
 (defn pair-sum-2020-product [xs]
@@ -33,8 +33,17 @@
         xs))
     xs))
 
+(defn n-sum-target-product [target n xs]
+  (some
+    (fn [group]
+      (when (= target (reduce + group))
+        (reduce * group)))
+    (combi/combinations xs n)))
+
 (t/deftest day-01-a
-  (t/is (= 1009899 (pair-sum-2020-product input))))
+  (t/is (= 1009899 (pair-sum-2020-product input)))
+  (t/is (= 1009899 (n-sum-target-product sum-target 2 input))))
 
 (t/deftest day-01-b
-  (t/is (= 44211152 (triplet-sum-2020-product input))))
+  (t/is (= 44211152 (triplet-sum-2020-product input)))
+  (t/is (= 44211152 (n-sum-target-product sum-target 3 input))))
