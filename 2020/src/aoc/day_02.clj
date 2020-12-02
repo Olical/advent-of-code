@@ -3,26 +3,37 @@
             [aoc.core :as aoc]))
 
 (defn parse-policy+pass [s]
-  (let [[_ min-str max-str req pass]
+  (let [[_ a b req pass]
         (re-matches #"(\d+)-(\d+) ([a-z]): ([a-z]+)" s)]
-    {:min (Integer/parseInt min-str)
-     :max (Integer/parseInt max-str)
+    {:a (Integer/parseInt a)
+     :b (Integer/parseInt b)
      :req req
      :pass pass}))
 
 (def input (aoc/with-lines "day-02" parse-policy+pass vec))
 
-(defn valid-freq? [{:keys [min max req pass]}]
+(defn valid-freq? [{:keys [a b req pass]}]
   (let [freq (count (re-seq (re-pattern req) pass))]
-    (<= min freq max)))
+    (<= a freq b)))
+
+(defn valid-pos? [{:keys [a b req pass]}]
+  (let [req-char (first req)]
+    (->> [a b]
+         (map #(get pass (dec %)))
+         (filter #(= req-char %))
+         (count)
+         (= 1))))
 
 (t/deftest day-01-a
-  (t/is (= {:min 1, :max 3, :req "b", :pass "cdefg"}
+  (t/is (= {:a 1, :b 3, :req "b", :pass "cdefg"}
            (parse-policy+pass "1-3 b: cdefg")))
-  (t/is (valid-freq? {:min 1, :max 3, :req "a", :pass "abcde"}))
-  (t/is (not (valid-freq? {:min 1, :max 3, :req "b", :pass "cdefg"})))
-  (t/is (valid-freq? {:min 2, :max 9, :req "c", :pass "ccccccccc"}))
+  (t/is (valid-freq? {:a 1, :b 3, :req "a", :pass "abcde"}))
+  (t/is (not (valid-freq? {:a 1, :b 3, :req "b", :pass "cdefg"})))
+  (t/is (valid-freq? {:a 2, :b 9, :req "c", :pass "ccccccccc"}))
   (t/is (= 524 (count (filter valid-freq? input)))))
 
 (t/deftest day-01-b
-  (t/is (= true true)))
+  (t/is (valid-pos? {:a 1, :b 3, :req "a", :pass "abcde"}))
+  (t/is (not (valid-pos? {:a 1, :b 3, :req "b", :pass "cdefg"})))
+  (t/is (not (valid-pos? {:a 2, :b 9, :req "c", :pass "ccccccccc"})))
+  (t/is (= 485 (count (filter valid-pos? input)))))
