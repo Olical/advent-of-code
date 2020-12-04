@@ -18,11 +18,14 @@
         (recur world (conj acc current-pos))
         acc))))
 
+(defn count-trees [path]
+  (count (filter #{:t} path)))
+
 (t/deftest day-03-a
   (t/is (= [:. :t :t :. :t
             :. :t :t]
            (vec (take 8 (parse-row ".##.#")))))
-  (t/is (= 237 (count (filter #{:t} (path {:world input, :right 3, :down 1}))))))
+  (t/is (= 237 (count-trees (path {:world input, :right 3, :down 1})))))
 
 (t/deftest day-03-b
   (t/is (= 2106818610
@@ -33,5 +36,5 @@
                  {:right 1, :down 2}]
                 (map
                   (fn [step]
-                    (count (filter #{:t} (path (assoc step :world input))))))
+                    (count-trees (path (assoc step :world input)))))
                 (reduce *)))))
