@@ -24,4 +24,14 @@
            (vec (take 8 (parse-row ".##.#")))))
   (t/is (= 237 (count (filter #{:t} (path {:world input, :right 3, :down 1}))))))
 
-(t/deftest day-03-b)
+(t/deftest day-03-b
+  (t/is (= 2106818610
+           (->> [{:right 1, :down 1}
+                 {:right 3, :down 1}
+                 {:right 5, :down 1}
+                 {:right 7, :down 1}
+                 {:right 1, :down 2}]
+                (map
+                  (fn [step]
+                    (count (filter #{:t} (path (assoc step :world input))))))
+                (reduce *)))))
