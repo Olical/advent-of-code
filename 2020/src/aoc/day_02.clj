@@ -24,7 +24,7 @@
          (count)
          (= 1))))
 
-(t/deftest day-01-a
+(t/deftest day-02-a
   (t/is (= {:a 1, :b 3, :req "b", :pass "cdefg"}
            (parse-policy+pass "1-3 b: cdefg")))
   (t/is (valid-freq? {:a 1, :b 3, :req "a", :pass "abcde"}))
@@ -32,7 +32,7 @@
   (t/is (valid-freq? {:a 2, :b 9, :req "c", :pass "ccccccccc"}))
   (t/is (= 524 (count (filter valid-freq? input)))))
 
-(t/deftest day-01-b
+(t/deftest day-02-b
   (t/is (valid-pos? {:a 1, :b 3, :req "a", :pass "abcde"}))
   (t/is (not (valid-pos? {:a 1, :b 3, :req "b", :pass "cdefg"})))
   (t/is (not (valid-pos? {:a 2, :b 9, :req "c", :pass "ccccccccc"})))
