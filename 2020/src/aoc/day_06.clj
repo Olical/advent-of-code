@@ -27,4 +27,4 @@
   (t/is (= 6297 (part-a input))))
 
 (t/deftest day-06-b
-  (t/is (= 0 (part-b input))))
+  (t/is (= 3158 (part-b input))))
