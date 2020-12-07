@@ -53,6 +53,13 @@
 (defn root? [bag-id]
   (empty? (get bags [bag-id :parents])))
 
+(defn total-bags [target-id]
+  (let [{:keys [children]} (get bags (bag->id target-id))]
+    (map
+      (fn [child]
+        (* (:amount child) (reduce + 1 (total-bags child))))
+      children)))
+
 (t/deftest day-07-a
   (t/is (= {:desc "bright"
             :colour "white"
@@ -72,4 +79,4 @@
                 (count)))))
 
 (t/deftest day-07-b
-  (t/is (= 0 0)))
+  (t/is (= 38426 (reduce + (total-bags {:desc "shiny", :colour "gold"})))))
