@@ -14,8 +14,8 @@
 
 (def input (aoc/with-lines "day-08" parse vec))
 
-(defn step [{:keys [pc acc]}]
-  (let [{:keys [op v]} (nth input pc)]
+(defn step [program {:keys [pc acc]}]
+  (let [{:keys [op v]} (nth program pc)]
     (case op
       :nop {:pc (inc pc)
             :acc acc}
@@ -24,19 +24,44 @@
       :jmp {:pc (+ pc v)
             :acc acc})))
 
-(defn until-loop []
+(defn execute [program]
   (loop [state {:pc 0 :acc 0}
-         states [{:pc 0 :acc 0}]
          seen-pcs #{}]
-    (let [{:keys [pc] :as state} (step state)]
-      (if (contains? seen-pcs pc)
-        states
-        (recur state (conj states state) (conj seen-pcs pc))))))
+    (let [{:keys [pc] :as state} (step program state)]
+      (cond
+        (contains? seen-pcs pc)
+        {:exit :loop
+         :state state}
+
+        (= pc (count program))
+        {:exit :complete
+         :state state}
+
+        (> pc (count program))
+        {:exit :overshot
+         :state state}
+
+        :else (recur state (conj seen-pcs pc))))))
+
+(defn exicute-mutations [program]
+  (loop [mutation-pc 0]
+    (let [program (update program mutation-pc
+                          (fn [{:keys [op] :as step}]
+                            (assoc step :op
+                                   (case op
+                                     :jmp :nop
+                                     :nop :jmp
+                                     op))))
+          {:keys [exit] :as result} (execute program)]
+      (case exit
+        :complete result
+        (= mutation-pc (dec (count program))) nil
+        (recur (inc mutation-pc))))))
 
 (t/deftest day-08-a
   (t/is (= {:op :acc, :sign :+, :v 1} (parse "acc +1")))
   (t/is (= {:op :nop, :sign :-, :v -20} (parse "nop -20")))
-  (t/is (= 1709 (:acc (last (until-loop))))))
+  (t/is (= 1709 (get-in (execute input) [:state :acc]))))
 
 (t/deftest day-08-b
-  (t/is (= 0 0)))
+  (t/is (= 0 (get-in (exicute-mutations input) [:state :acc]))))
